@@ -1,0 +1,100 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/sections/PageHero.astro';
+import Annotation from '@/components/ui/Annotation.astro';
+import BookCta from '@/components/ui/BookCta.astro';
+import { about } from '@/content/about';
+---
+
+<BaseLayout page="about">
+  <PageHero eyebrow="About" title="Built so work<br/>keeps working." annotation="Build" />
+
+  <section class="section">
+    <div class="container ab">
+      <p class="eyebrow" data-reveal>{about.story[0]}</p>
+      <blockquote class="ab__belief h2" data-reveal style="--reveal-delay:80">
+        “{about.belief}”
+        <Annotation mark="underline" class="ab__annot" />
+      </blockquote>
+      <p class="lede ab__story" data-reveal style="--reveal-delay:160">{about.story[1]}</p>
+    </div>
+  </section>
+
+  <section class="section section--raised" aria-labelledby="principles-title">
+    <div class="container">
+      <h2 class="h2 ab__ph" id="principles-title" data-reveal>How we work</h2>
+      <ol class="ab__principles">
+        {
+          about.principles.map((p, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 90}`}>
+              <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="h3">{p.title}</h3>
+              <p class="body">{p.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="ab__cta" data-reveal><BookCta /></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .ab {
+    display: grid;
+    gap: 2.4rem;
+  }
+  .ab__belief {
+    position: relative;
+    max-width: 22ch;
+    margin: 0;
+  }
+  .ab__belief :global(.ab__annot) {
+    position: absolute;
+    left: 0;
+    width: 40%;
+    bottom: -1.2rem;
+  }
+  .ab__belief :global(.ab__annot svg) {
+    width: 100%;
+  }
+  .ab__story {
+    max-width: 52ch;
+    justify-self: end;
+  }
+  .ab__ph {
+    margin-bottom: 3rem;
+  }
+  .ab__principles {
+    display: grid;
+    border-top: 1px solid var(--line-strong);
+  }
+  .ab__principles li {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1.8rem 1.4rem 2.2rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ab__principles .mono {
+    color: var(--blue);
+  }
+  .ab__cta {
+    margin-top: 3rem;
+  }
+  @media (min-width: 900px) {
+    .ab__principles {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .ab__principles li {
+      border-bottom: 0;
+      border-right: 1px solid var(--line);
+      padding-left: 1.2rem;
+    }
+    .ab__principles li:first-child {
+      padding-left: 0;
+    }
+    .ab__principles li:last-child {
+      border-right: 0;
+    }
+  }
+</style>

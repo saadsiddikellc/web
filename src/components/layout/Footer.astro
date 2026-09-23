@@ -1,0 +1,148 @@
+---
+import { siteConfig } from '@/config/site';
+import { capabilities } from '@/content/services';
+import BookCta from '@/components/ui/BookCta.astro';
+import Annotation from '@/components/ui/Annotation.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__cta" data-reveal>
+      <p class="eyebrow">Next step</p>
+      <p class="site-footer__headline h1">
+        Let your<br />business <span class="site-footer__run">run.<Annotation mark="underline" class="site-footer__annot" /></span>
+      </p>
+      <div class="site-footer__actions">
+        <BookCta variant="light" />
+      </div>
+    </div>
+
+    <div class="site-footer__grid">
+      <div>
+        <p class="label muted">Navigate</p>
+        <ul>
+          {siteConfig.nav.map((item) => <li><a class="link-hover" href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <p class="label muted">Capabilities</p>
+        <ul>
+          {capabilities.slice(0, 6).map((c) => <li><a class="link-hover" href={`/services#${c.id}`}>{c.title}</a></li>)}
+        </ul>
+      </div>
+      <div class="site-footer__about">
+        <p class="label muted">XUS</p>
+        <p>AI agents and autonomous AI automation for businesses that run on leads, follow-up, scheduling and renewals.</p>
+      </div>
+    </div>
+
+    <div class="site-footer__base">
+      <span class="mono">© {year} XUS</span>
+      <span class="mono">{siteConfig.domain}</span>
+      <span class="mono">Built to keep working.</span>
+    </div>
+
+    <div class="site-footer__wordmark" aria-hidden="true">XUS</div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    background: var(--ink);
+    color: var(--bg);
+    padding-top: clamp(5rem, 3rem + 7vw, 10rem);
+    overflow: hidden;
+  }
+  .site-footer__cta {
+    display: grid;
+    gap: 2rem;
+    padding-bottom: clamp(4rem, 2rem + 6vw, 8rem);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .site-footer__cta .eyebrow {
+    color: var(--metal);
+  }
+  .site-footer__run {
+    position: relative;
+    display: inline-block;
+  }
+  .site-footer__annot {
+    position: absolute;
+    left: 0;
+    right: -10%;
+    bottom: -0.25em;
+    color: var(--blue-2);
+  }
+  .site-footer__annot :global(svg) {
+    width: 100%;
+  }
+  .site-footer__grid {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: 3.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .site-footer__grid ul {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 1.2rem;
+    font-size: 0.95rem;
+  }
+  .site-footer__grid .muted {
+    color: var(--metal);
+  }
+  .site-footer__about {
+    grid-column: 1 / -1;
+  }
+  .site-footer__about p:last-child {
+    margin-top: 1.2rem;
+    color: var(--metal-2);
+    max-width: 34ch;
+  }
+  .link-hover {
+    color: var(--metal-2);
+    transition: color 0.3s;
+  }
+  .link-hover:hover {
+    color: var(--white);
+  }
+  .site-footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--metal);
+  }
+  .site-footer__wordmark {
+    font-size: clamp(8rem, 34vw, 34rem);
+    font-weight: 600;
+    letter-spacing: -0.07em;
+    line-height: 0.72;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.14);
+    margin-top: 1rem;
+    margin-bottom: -0.06em;
+    text-align: center;
+    user-select: none;
+  }
+  @media (min-width: 900px) {
+    .site-footer__cta {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+    .site-footer__cta .eyebrow {
+      grid-column: 1 / -1;
+    }
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr 1.4fr;
+    }
+    .site-footer__about {
+      grid-column: auto;
+    }
+  }
+</style>

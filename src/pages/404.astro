@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/ui/Button.astro';
+---
+
+<BaseLayout page="notFound" noindex>
+  <section class="nf">
+    <div class="container">
+      <p class="eyebrow">404</p>
+      <h1 class="display">Nothing here.</h1>
+      <p class="lede">This page doesn’t exist. Your workflows, however, can keep running.</p>
+      <Button href="/">Back to home</Button>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    padding-top: calc(var(--header-h) + 8rem);
+    padding-bottom: 8rem;
+  }
+  .nf .container {
+    display: grid;
+    gap: 1.6rem;
+    justify-items: start;
+  }
+</style>

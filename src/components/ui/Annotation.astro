@@ -1,0 +1,124 @@
+---
+/**
+ * Editorial, architectural-sketch style annotation: a small blue label with a
+ * hand-drawn mark. Decorative only (aria-hidden). Strokes draw in when revealed.
+ */
+interface Props {
+  label?: string;
+  mark?: 'circle' | 'arrow' | 'arrow-down' | 'underline' | 'bracket' | 'tick' | 'cross';
+  class?: string;
+  style?: string;
+}
+const { label, mark = 'arrow', class: className = '', style } = Astro.props;
+
+const marks: Record<NonNullable<Props['mark']>, { vb: string; d: string[]; w: number; h: number }> = {
+  circle: {
+    vb: '0 0 120 60',
+    w: 120,
+    h: 60,
+    d: ['M62 6c-30-2-56 8-57 24 0 15 26 25 55 24 30-1 55-11 55-26S88 4 52 8'],
+  },
+  arrow: {
+    vb: '0 0 90 40',
+    w: 90,
+    h: 40,
+    d: ['M3 30c18-14 44-22 78-18', 'M70 4l12 8-11 10'],
+  },
+  'arrow-down': {
+    vb: '0 0 40 80',
+    w: 40,
+    h: 80,
+    d: ['M14 3c12 20 14 44 8 70', 'M11 62l11 13 9-14'],
+  },
+  underline: {
+    vb: '0 0 140 16',
+    w: 140,
+    h: 16,
+    d: ['M3 10c30-5 70-7 134-4', 'M18 14c30-3 60-4 96-2'],
+  },
+  bracket: {
+    vb: '0 0 24 90',
+    w: 24,
+    h: 90,
+    d: ['M20 3C8 4 8 14 8 26s-5 18-5 19 5 5 5 19-1 22 12 23'],
+  },
+  tick: {
+    vb: '0 0 40 30',
+    w: 40,
+    h: 30,
+    d: ['M3 16l11 10L37 3'],
+  },
+  cross: {
+    vb: '0 0 30 30',
+    w: 30,
+    h: 30,
+    d: ['M4 4l22 22', 'M26 5L5 25'],
+  },
+};
+const m = marks[mark];
+---
+
+<span class={`annot annot--${mark} ${className}`} style={style} aria-hidden="true" data-annot>
+  <svg class="annot__mark" viewBox={m.vb} width={m.w} height={m.h} fill="none">
+    {m.d.map((d) => <path d={d} />)}
+  </svg>
+  {label && <span class="annot__label">{label}</span>}
+</span>
+
+<style>
+  .annot {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--blue);
+    pointer-events: none;
+    user-select: none;
+  }
+  .annot__mark {
+    width: auto;
+    height: auto;
+    overflow: visible;
+  }
+  .annot__mark path {
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  /* Drawn-in reveal, left to right, like a pen stroke. */
+  :global(.js) .annot__mark {
+    clip-path: inset(-20% 100% -20% -20%);
+    transition: clip-path 1.2s var(--ease-out) 0.2s;
+  }
+  :global(.js) .annot.is-in .annot__mark,
+  :global(.js .is-in) .annot__mark {
+    clip-path: inset(-20% -20% -20% -20%);
+  }
+  .annot__label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .annot--circle {
+    flex-direction: column;
+  }
+  .annot--circle .annot__label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+  .annot--arrow-down {
+    flex-direction: column-reverse;
+  }
+  .annot--underline {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+</style>

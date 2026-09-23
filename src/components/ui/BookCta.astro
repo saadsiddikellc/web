@@ -1,0 +1,15 @@
+---
+import { siteConfig } from '@/config/site';
+import Button from './Button.astro';
+interface Props {
+  variant?: 'solid' | 'ghost' | 'light';
+  size?: 'default' | 'small';
+  class?: string;
+}
+const { variant, size, class: className } = Astro.props;
+const { primary } = siteConfig.cta;
+---
+
+<Button href={primary.href} external={primary.external} variant={variant} size={size} class={className}>
+  {primary.label}
+</Button>

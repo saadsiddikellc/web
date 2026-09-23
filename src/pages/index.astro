@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import StorySection from '@/components/home/StorySection.astro';
+import ServicesOverview from '@/components/sections/ServicesOverview.astro';
+import CapabilityGrid from '@/components/sections/CapabilityGrid.astro';
+import InsuranceFlow from '@/components/sections/InsuranceFlow.astro';
+import ProcessSteps from '@/components/sections/ProcessSteps.astro';
+import PricingScope from '@/components/sections/PricingScope.astro';
+import WorkTeaser from '@/components/sections/WorkTeaser.astro';
+import { capabilities } from '@/content/services';
+import { siteConfig } from '@/config/site';
+
+const schema = [
+  {
+    '@type': 'ProfessionalService',
+    '@id': `${siteConfig.url}/#service`,
+    name: 'XUS',
+    url: siteConfig.url,
+    description: siteConfig.description,
+    serviceType: ['AI agents', 'AI automation', 'Business process automation'],
+    areaServed: 'Worldwide',
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'AI automation capabilities',
+      itemListElement: capabilities.map((c) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: c.title, description: c.summary },
+      })),
+    },
+  },
+];
+---
+
+<BaseLayout page="home" schema={schema} headerOverlay>
+  <StorySection />
+  <ServicesOverview />
+  <InsuranceFlow />
+  <CapabilityGrid />
+  <WorkTeaser />
+  <ProcessSteps />
+  <PricingScope />
+</BaseLayout>

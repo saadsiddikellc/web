@@ -1,0 +1,36 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  as?: 'h1' | 'h2';
+  size?: 'h1' | 'h2';
+  id?: string;
+}
+const { eyebrow, title, lede, as: Tag = 'h2', size = 'h2', id } = Astro.props;
+---
+
+<header class="section-head" data-reveal>
+  <div class="section-head__title">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <Tag class={size} id={id} set:html={title} />
+  </div>
+  {lede && <p class="lede section-head__lede">{lede}</p>}
+  <slot />
+</header>
+
+<style>
+  .section-head__title {
+    display: grid;
+    gap: 1.3rem;
+  }
+  .section-head__lede {
+    justify-self: start;
+  }
+  @media (min-width: 900px) {
+    .section-head__lede {
+      justify-self: end;
+      max-width: 34ch;
+    }
+  }
+</style>

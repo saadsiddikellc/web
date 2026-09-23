@@ -1,0 +1,61 @@
+---
+import { processSteps } from '@/content/services';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+---
+
+<section class="section" aria-labelledby="process-title">
+  <div class="container">
+    <SectionHeader
+      eyebrow="How it works"
+      id="process-title"
+      title="From your busiest day<br/>to a system that runs."
+      lede="We start with how your business actually works — then design, build and run the system with you."
+    />
+    <ol class="proc">
+      {
+        processSteps.map((s, i) => (
+          <li class="proc__step" data-reveal style={`--reveal-delay:${i * 90}`}>
+            <span class="proc__i mono">{s.index}</span>
+            <h3 class="h3">{s.title}</h3>
+            <p class="body">{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .proc {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+  .proc__step {
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+    padding: 1.8rem 0 2.4rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .proc__i {
+    color: var(--blue);
+  }
+  @media (min-width: 900px) {
+    .proc {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .proc__step {
+      padding-right: 1.6rem;
+      border-bottom: 0;
+      border-right: 1px solid var(--line);
+      padding-left: 1.2rem;
+    }
+    .proc__step:first-child {
+      padding-left: 0;
+    }
+    .proc__step:last-child {
+      border-right: 0;
+    }
+  }
+</style>

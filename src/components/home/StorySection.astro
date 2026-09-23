@@ -1,0 +1,672 @@
+---
+import { chapters, hero, manualTasks, problemLines, workflowSteps, autonomousFeed } from '@/content/story';
+import { siteConfig } from '@/config/site';
+import Button from '@/components/ui/Button.astro';
+import BookCta from '@/components/ui/BookCta.astro';
+import Annotation from '@/components/ui/Annotation.astro';
+import HomeStory from '@/three/scenes/HomeStory';
+
+const ch = Object.fromEntries(chapters.map((c) => [c.id, c]));
+const style = (id: keyof typeof ch) => `--h:${ch[id].height}`;
+---
+
+<section class="story" data-story aria-label="The XUS story">
+  <div class="story__stage" aria-hidden="true">
+    <div class="story__poster"></div>
+    <HomeStory client:only="react" steps={workflowSteps} />
+    <div class="story__flash"></div>
+    <div class="story__dim"></div>
+    <div class="story__vignette"></div>
+  </div>
+
+  <div class="story__chapters">
+    <!-- 0 · VISION -->
+    <div class="chapter chapter--left chapter--hero" data-chapter="vision" style={style('vision')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content" data-chapter-content data-static>
+          <p class="eyebrow">AI agents · AI automation</p>
+          <h1 class="display chapter__title">
+            <span class="line">{hero.title[0]}</span>
+            <span class="line">{hero.title[1]}</span>
+          </h1>
+          <p class="lede">{hero.lede}</p>
+          <div class="chapter__actions">
+            <BookCta />
+            <Button href={siteConfig.cta.secondary.href} variant="ghost">{siteConfig.cta.secondary.label}</Button>
+          </div>
+        </div>
+        <Annotation label="Goals" mark="arrow" class="chapter__annot chapter__annot--hero" />
+        <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><i></i></div>
+      </div>
+    </div>
+
+    <!-- 1 · HEADQUARTERS -->
+    <div class="chapter chapter--right" data-chapter="headquarters" style={style('headquarters')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content" data-chapter-content>
+          <p class="eyebrow">Headquarters</p>
+          <h2 class="h2">Built for businesses that never stop moving.</h2>
+          <p class="body">Two founders set out to build the system every busy team wishes it had: one that does the repetitive work, without being asked twice.</p>
+          <Annotation label="Build" mark="circle" class="chapter__annot chapter__annot--hq" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 · ENTER -->
+    <div class="chapter chapter--left" data-chapter="enter" style={style('enter')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content chapter__content--quiet" data-chapter-content>
+          <p class="mono">Step inside an ordinary day.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 · OFFICE -->
+    <div class="chapter chapter--left" data-chapter="office" style={style('office')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content" data-chapter-content>
+          <p class="eyebrow">09:00</p>
+          <h2 class="h2">A room full of capable people<span class="em-metal">, moving the business by hand.</span></h2>
+          <p class="body">Calls, inboxes, calendars, quotes, forms. Every task done manually — one at a time.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 · MANUAL WORK -->
+    <div class="chapter chapter--right" data-chapter="manual" style={style('manual')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content" data-chapter-content>
+          <p class="eyebrow">11:40</p>
+          <h2 class="h2">Then the work multiplies.</h2>
+          <ul class="task-tags" data-task-tags>
+            {
+              manualTasks.map((task, i) => (
+                <li class:list={['task-tag', { 'task-tag--missed': i === 0 }]}>
+                  <span class="task-tag__dot" />
+                  {task}
+                </li>
+              ))
+            }
+          </ul>
+          <p class="body">Busy becomes overloaded. Overloaded becomes chaos.</p>
+          <Annotation label="Leads" mark="cross" class="chapter__annot chapter__annot--leads" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · PROBLEM -->
+    <div class="chapter chapter--center chapter--problem" data-chapter="problem" style={style('problem')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content" data-chapter-content>
+          <h2 class="sr-only">The problem</h2>
+          <ol class="problem-lines" data-problem-lines>
+            {
+              problemLines.map((line, i) => (
+                <li class:list={['problem-line', { 'problem-line--final': i === problemLines.length - 1 }]}>
+                  {line}
+                  {i === problemLines.length - 1 && <Annotation mark="underline" class="problem-line__annot" />}
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 · AI -->
+    <div class="chapter chapter--left" data-chapter="ai" id="how-it-works" style={style('ai')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content" data-chapter-content>
+          <p class="eyebrow">Introducing the system</p>
+          <h2 class="h2">Meet your autonomous <span class="accent">AI agent.</span></h2>
+          <p class="body">One intelligent system that takes the repetitive work off the floor — capturing, qualifying, replying, following up, scheduling, updating and renewing. Calmly. Continuously.</p>
+          <Annotation label="Autonomous" mark="arrow" class="chapter__annot chapter__annot--ai" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 · WORKFLOW -->
+    <div class="chapter chapter--right chapter--workflow" data-chapter="workflow" style={style('workflow')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content" data-chapter-content>
+          <p class="eyebrow">One agent · many workflows</p>
+          <h2 class="h2">Every step, handled.</h2>
+          <ol class="flow-list" data-flow-list>
+            {
+              workflowSteps.map((s, i) => (
+                <li class="flow-list__item">
+                  <span class="flow-list__i">{String(i + 1).padStart(2, '0')}</span>
+                  <span>{s}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 · AUTONOMOUS -->
+    <div class="chapter chapter--right chapter--night" data-chapter="autonomous" style={style('autonomous')}>
+      <div class="chapter__sticky">
+        <div class="chapter__content" data-chapter-content>
+          <p class="eyebrow">22:15</p>
+          <h2 class="h2">You don’t have to be there.<br /><span class="accent-night">Your system keeps working.</span></h2>
+          <div class="feed" aria-label="Illustrative activity">
+            <p class="feed__label mono">Live · illustrative</p>
+            <ul class="feed__list">
+              {
+                autonomousFeed.slice(0, 5).map((f, i) => (
+                  <li class="feed__item" style={`--i:${i}`}>
+                    <span class="feed__tick" />
+                    <span class="feed__what">{f.label}</span>
+                    <span class="feed__detail">{f.detail}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="chapter__actions">
+            <BookCta variant="light" />
+          </div>
+          <Annotation label="Scale" mark="arrow-down" class="chapter__annot chapter__annot--night" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initStoryScroll } from '@/scripts/story';
+  initStoryScroll();
+</script>
+
+<style>
+  .story {
+    --dim: 0;
+    --flash: 0;
+    --dusk: 0;
+    --scrim: 242, 241, 237;
+    position: relative;
+    background: var(--bg);
+  }
+
+  /* ---------- Stage ---------- */
+  .story__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100lvh;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .story__poster {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 70% at 50% 110%, rgba(36, 80, 255, 0.07), transparent 60%),
+      linear-gradient(180deg, #f2f1ed 0%, #ebe9e4 62%, #e2e0da 100%);
+    transition: opacity 1.2s var(--ease-out);
+  }
+  .story__poster::after {
+    /* Architectural hint while 3D loads (and fallback without WebGL). */
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 22%;
+    width: min(86vw, 900px);
+    height: min(34vh, 320px);
+    transform: translateX(-50%);
+    background:
+      repeating-linear-gradient(90deg, rgba(12, 12, 13, 0.08) 0 1px, transparent 1px 42px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.35));
+    box-shadow: inset 0 14px 0 rgba(255, 255, 255, 0.9);
+    opacity: 0.8;
+  }
+  :global(.has-webgl) .story__poster {
+    opacity: 0;
+    transition-delay: 0.2s;
+  }
+  :global(.story-canvas) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.4s var(--ease-out);
+  }
+  :global(.story-canvas.is-ready) {
+    opacity: 1;
+  }
+  :global(.story-canvas canvas) {
+    display: block;
+  }
+  .story__flash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(60% 60% at 50% 45%, rgba(255, 255, 255, 0.95), rgba(233, 238, 255, 0.6) 60%, rgba(255, 255, 255, 0.2));
+    opacity: var(--flash);
+  }
+  .story__dim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--bg);
+    opacity: calc(var(--dim) * 0.84);
+  }
+  .story__vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(130% 90% at 50% 50%, transparent 55%, rgba(12, 12, 13, calc(0.06 + var(--dusk) * 0.35)));
+  }
+
+  /* ---------- Workflow labels (positioned from 3D) ---------- */
+  :global(.story-labels) {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  :global(.story-label) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    margin: 18px 0 0 18px;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ink-2);
+    will-change: transform, opacity;
+  }
+  :global(.story-label__i) {
+    color: var(--blue);
+  }
+  :global(.story-label.is-active .story-label__t) {
+    color: var(--blue);
+  }
+  @media (max-width: 720px) {
+    :global(.story-labels) {
+      display: none;
+    }
+  }
+
+  /* ---------- Chapters ---------- */
+  .story__chapters {
+    position: relative;
+    z-index: 1;
+    margin-top: -100vh;
+    margin-top: -100lvh;
+  }
+  .chapter {
+    position: relative;
+    height: calc(var(--h) * 1vh);
+    height: calc(var(--h) * 1lvh);
+    pointer-events: none;
+  }
+  .chapter__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: calc(var(--header-h) + 2rem) var(--gutter) 3rem;
+    max-width: var(--maxw);
+    margin-inline: auto;
+  }
+  .chapter__content {
+    position: relative;
+    display: grid;
+    gap: 1.4rem;
+    max-width: 34rem;
+    pointer-events: auto;
+  }
+  .chapter__content::before {
+    /* Soft editorial scrim — keeps copy legible over the film without boxes. */
+    content: '';
+    position: absolute;
+    inset: -18% -22%;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(var(--scrim), 0.82), rgba(var(--scrim), 0.5) 55%, rgba(var(--scrim), 0));
+    filter: blur(6px);
+    pointer-events: none;
+  }
+  .chapter--right .chapter__sticky {
+    justify-content: flex-end;
+  }
+  .chapter--center .chapter__sticky {
+    justify-content: center;
+    text-align: center;
+  }
+  .chapter--center .chapter__content {
+    max-width: 62rem;
+  }
+
+  .chapter--hero .chapter__sticky {
+    align-items: flex-end;
+    padding-bottom: clamp(4.5rem, 10vh, 7rem);
+  }
+  .chapter--hero .chapter__content {
+    max-width: 60rem;
+  }
+  .chapter__title .line {
+    display: block;
+  }
+  .chapter__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+  }
+  .chapter__content--quiet::before {
+    display: none;
+  }
+  .chapter__content--quiet .mono {
+    font-size: 0.8rem;
+    color: var(--ink-3);
+  }
+
+  .chapter__annot {
+    position: absolute;
+  }
+  .chapter__annot--hero {
+    right: calc(var(--gutter) + 6vw);
+    bottom: 36vh;
+    transform: rotate(-8deg) scaleX(-1);
+  }
+  .chapter__annot--hero :global(.annot__label) {
+    transform: scaleX(-1);
+  }
+  .chapter__annot--hq {
+    right: -1rem;
+    top: -4.2rem;
+  }
+  .chapter__annot--leads {
+    left: -3rem;
+    top: 5.2rem;
+  }
+  .chapter__annot--ai {
+    right: -7.5rem;
+    bottom: -3rem;
+    transform: rotate(-14deg);
+  }
+  .chapter__annot--night {
+    left: -4rem;
+    top: 0;
+    color: var(--blue-2);
+  }
+
+  .scroll-cue {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(4.5rem, 10vh, 7rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .scroll-cue span {
+    writing-mode: vertical-rl;
+  }
+  .scroll-cue i {
+    position: relative;
+    width: 1px;
+    height: 56px;
+    background: var(--line-strong);
+    overflow: hidden;
+  }
+  .scroll-cue i::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--blue);
+    transform: translateY(-100%);
+    animation: cue 2.2s var(--ease-in-out) infinite;
+  }
+  @keyframes cue {
+    60%,
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  /* Manual tasks */
+  .task-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .task-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--line-strong);
+    background: rgba(255, 255, 255, 0.55);
+    font-size: 0.85rem;
+    border-radius: 999px;
+  }
+  .task-tag__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--metal);
+  }
+  .task-tag--missed {
+    text-decoration: line-through;
+    text-decoration-color: rgba(12, 12, 13, 0.4);
+    background: var(--blush);
+  }
+
+  /* Problem */
+  .problem-lines {
+    display: grid;
+    gap: 0.35em;
+    font-size: clamp(2rem, 1rem + 4.4vw, 5.6rem);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .problem-line {
+    position: relative;
+    text-wrap: balance;
+  }
+  .problem-line--final {
+    font-size: 0.52em;
+    letter-spacing: -0.035em;
+    margin-top: 0.8em;
+    justify-self: center;
+    max-width: 22ch;
+  }
+  .problem-line :global(.problem-line__annot) {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: -0.55em;
+  }
+  .problem-line :global(.problem-line__annot svg) {
+    width: 100%;
+  }
+  .chapter--problem .chapter__content::before {
+    display: none;
+  }
+
+  /* Workflow list */
+  .flow-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+  .flow-list__item {
+    display: flex;
+    gap: 0.8rem;
+    align-items: baseline;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.95rem;
+    transition: color 0.4s;
+  }
+  .flow-list__item:nth-child(odd) {
+    padding-right: 1rem;
+  }
+  .flow-list__i {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--metal);
+    letter-spacing: 0.08em;
+  }
+  .flow-list__item.is-on {
+    color: var(--ink);
+  }
+  .flow-list__item.is-on .flow-list__i {
+    color: var(--blue);
+  }
+
+  /* Night chapter */
+  .chapter--night .h2 {
+    font-size: clamp(2rem, 1.2rem + 2.6vw, 3.6rem);
+  }
+  .chapter--night {
+    --scrim: 21, 22, 27;
+    color: color-mix(in srgb, var(--bg) calc(var(--dusk) * 100%), var(--ink));
+  }
+  .chapter--night .eyebrow,
+  .chapter--night .feed__detail,
+  .chapter--night .feed__label {
+    color: color-mix(in srgb, var(--metal-2) calc(var(--dusk) * 100%), var(--ink-3));
+  }
+  .chapter--night .chapter__content::before {
+    background: radial-gradient(closest-side, rgba(var(--scrim), calc(var(--dusk) * 0.7)), rgba(var(--scrim), 0));
+  }
+  .accent-night {
+    color: var(--blue-2);
+  }
+  .feed {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 26rem;
+  }
+  .feed__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .feed__label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue-2);
+    box-shadow: 0 0 0 0 rgba(74, 116, 255, 0.6);
+    animation: live 2s infinite;
+  }
+  @keyframes live {
+    70% {
+      box-shadow: 0 0 0 8px rgba(74, 116, 255, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(74, 116, 255, 0);
+    }
+  }
+  .feed__list {
+    display: grid;
+    border-top: 1px solid color-mix(in srgb, rgba(255, 255, 255, 0.16) calc(var(--dusk) * 100%), var(--line));
+  }
+  .feed__item {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid color-mix(in srgb, rgba(255, 255, 255, 0.1) calc(var(--dusk) * 100%), var(--line));
+    font-size: 0.9rem;
+    animation: feed 10s calc(var(--i) * 2s) infinite both;
+  }
+  .feed__tick {
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--blue-2);
+    border-radius: 50%;
+    position: relative;
+  }
+  .feed__tick::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px;
+    border-radius: 50%;
+    background: var(--blue-2);
+    animation: tick 10s calc(var(--i) * 2s) infinite both;
+  }
+  .feed__detail {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+  }
+  @keyframes feed {
+    0% {
+      opacity: 0.35;
+    }
+    3%,
+    14% {
+      opacity: 1;
+    }
+    22%,
+    100% {
+      opacity: 0.55;
+    }
+  }
+  @keyframes tick {
+    0% {
+      transform: scale(0);
+    }
+    4%,
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .chapter__sticky {
+      align-items: flex-end;
+      padding-bottom: 2.5rem;
+    }
+    .chapter--right .chapter__sticky {
+      justify-content: flex-start;
+    }
+    .chapter--problem .chapter__sticky {
+      align-items: center;
+    }
+    .chapter__annot--hero {
+      display: none;
+    }
+    .chapter__annot--ai,
+    .chapter__annot--leads,
+    .chapter__annot--night {
+      display: none;
+    }
+    .flow-list {
+      grid-template-columns: 1fr 1fr;
+      font-size: 0.85rem;
+    }
+    .scroll-cue {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .feed__item,
+    .feed__tick::after,
+    .scroll-cue i::after {
+      animation: none;
+    }
+  }
+</style>

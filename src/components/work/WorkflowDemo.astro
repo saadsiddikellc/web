@@ -1,0 +1,310 @@
+---
+import type { WorkItem } from '@/content/work';
+import Annotation from '@/components/ui/Annotation.astro';
+
+interface Props {
+  item: WorkItem;
+  flip?: boolean;
+}
+const { item, flip = false } = Astro.props;
+const byId = Object.fromEntries(item.nodes.map((n) => [n.id, n]));
+
+const curve = (a: string, b: string) => {
+  const p = byId[a];
+  const q = byId[b];
+  const dx = (q.x - p.x) * 0.5;
+  return `M${p.x} ${p.y} C${p.x + dx} ${p.y}, ${q.x - dx} ${q.y}, ${q.x} ${q.y}`;
+};
+const pathEdges = item.path.slice(0, -1).map((id, i) => [id, item.path[i + 1]] as const);
+---
+
+<article class:list={['demo', { 'demo--flip': flip }]} id={item.id} data-demo data-path={item.path.join(',')} aria-labelledby={`${item.id}-title`}>
+  <div class="demo__copy" data-reveal>
+    <div class="demo__meta">
+      <span class="mono demo__index">{item.index}</span>
+      <span class="demo__badge mono">Demonstration</span>
+    </div>
+    <h2 class="h2 demo__title" id={`${item.id}-title`}>{item.title}</h2>
+    <p class="lede">{item.kicker}</p>
+    <p class="body">{item.summary}</p>
+    <ul class="demo__bullets">
+      {item.bullets.map((b) => <li>{b}</li>)}
+    </ul>
+    <button class="btn btn--ghost btn--small demo__run" type="button" data-demo-run>
+      <span data-demo-run-label>Run demo</span>
+      <svg class="btn__arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 2l9 5-9 5z" fill="currentColor"></path></svg>
+    </button>
+  </div>
+
+  <div class="demo__stage" data-demo-stage data-reveal style="--reveal-delay:120">
+    <div class="demo__plane" data-demo-plane>
+      <div class="demo__grid" aria-hidden="true"></div>
+      <div class="demo__inner" data-demo-inner>
+      <svg class="demo__svg" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
+        {item.links?.map(([a, b]) => <path class="demo__link" d={curve(a, b)} vector-effect="non-scaling-stroke" />)}
+        {pathEdges.map(([a, b]) => <path class="demo__edge" d={curve(a, b)} data-edge vector-effect="non-scaling-stroke" />)}
+      </svg>
+      <span class="demo__signal" data-demo-signal aria-hidden="true"></span>
+      {
+        item.nodes.map((n) => (
+          <div
+            class={`demo__node demo__node--${n.kind ?? 'action'}`}
+            data-node={n.id}
+            style={`left:${n.x}%;top:${(n.y / 60) * 100}%`}
+          >
+            <span class="demo__dot" />
+            <span class="demo__label">{n.label}</span>
+          </div>
+        ))
+      }
+      </div>
+      <Annotation label={item.annotation} mark="circle" class="demo__annot" />
+    </div>
+
+    <div class="demo__log" aria-live="polite" aria-label="Demonstration log (sample data)">
+      <div class="demo__log-head mono"><span>Event log</span><span>sample data</span></div>
+      <ol data-demo-log data-lines={JSON.stringify(item.log)}></ol>
+    </div>
+  </div>
+</article>
+
+<style>
+  .demo {
+    display: grid;
+    gap: clamp(2rem, 1rem + 3vw, 4rem);
+    padding-block: clamp(4rem, 2rem + 6vw, 8rem);
+    border-top: 1px solid var(--line-strong);
+    scroll-margin-top: var(--header-h);
+  }
+  .demo__copy {
+    display: grid;
+    gap: 1.2rem;
+    align-content: start;
+  }
+  .demo__meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .demo__index {
+    color: var(--blue);
+  }
+  .demo__badge {
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--ink-3);
+    font-size: 0.62rem;
+  }
+  .demo__bullets {
+    display: grid;
+    gap: 0.45rem;
+    color: var(--ink-2);
+  }
+  .demo__bullets li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: baseline;
+  }
+  .demo__bullets li::before {
+    content: '';
+    width: 12px;
+    height: 1px;
+    background: var(--blue);
+    transform: translateY(-0.3em);
+    flex: none;
+  }
+  .demo__run {
+    justify-self: start;
+    margin-top: 0.4rem;
+  }
+
+  /* Stage: a floating, tilted architectural plane */
+  .demo__stage {
+    display: grid;
+    gap: 1rem;
+    perspective: 1400px;
+  }
+  .demo__plane {
+    --rx: 18deg;
+    --ry: 0deg;
+    position: relative;
+    aspect-ratio: 100 / 64;
+    background: linear-gradient(180deg, var(--white), var(--bg-raised));
+    box-shadow:
+      0 1px 0 var(--line),
+      0 40px 60px -40px rgba(12, 12, 13, 0.35),
+      0 0 0 1px var(--line);
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    transform-style: preserve-3d;
+    transition: transform 0.9s var(--ease-out);
+    border-radius: 3px;
+    touch-action: pan-y;
+  }
+  .demo__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 8.33% 12.5%;
+    opacity: 0.45;
+    mask-image: radial-gradient(90% 90% at 50% 50%, #000 40%, transparent);
+  }
+  .demo__svg,
+  .demo__signal,
+  .demo__node {
+    position: absolute;
+  }
+  .demo__inner {
+    position: absolute;
+    inset: 9% 9%;
+    transform-style: preserve-3d;
+  }
+  .demo__svg {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .demo__link,
+  .demo__edge {
+    fill: none;
+    stroke-width: 1.2;
+  }
+  .demo__link {
+    stroke: var(--line-strong);
+    stroke-dasharray: 3 4;
+  }
+  .demo__edge {
+    stroke: var(--metal-2);
+  }
+  .demo__edge.is-lit {
+    stroke: var(--blue);
+  }
+  .demo__node {
+    transform: translate(-50%, -50%) translateZ(18px);
+    display: grid;
+    place-items: center;
+  }
+  .demo__dot {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--ink);
+    background: var(--white);
+    border-radius: 50%;
+    transition:
+      background 0.3s,
+      border-color 0.3s,
+      box-shadow 0.4s;
+  }
+  .demo__node--source .demo__dot,
+  .demo__node--store .demo__dot {
+    border-radius: 2px;
+  }
+  .demo__node--store .demo__dot {
+    background: var(--metal-2);
+    border-color: var(--metal);
+  }
+  .demo__node--agent .demo__dot {
+    width: 22px;
+    height: 22px;
+    background: var(--ink);
+    box-shadow: 0 0 0 5px var(--white), 0 0 0 6px var(--line-strong);
+  }
+  .demo__node--human .demo__dot {
+    background: radial-gradient(circle, var(--ink) 0 3px, var(--white) 3.5px);
+  }
+  .demo__node.is-lit .demo__dot {
+    border-color: var(--blue);
+    background: var(--blue);
+    box-shadow: 0 0 0 5px rgba(36, 80, 255, 0.14), 0 0 18px rgba(36, 80, 255, 0.45);
+  }
+  .demo__label {
+    font-family: var(--font-mono);
+    font-size: clamp(0.55rem, 0.45rem + 0.3vw, 0.7rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ink-2);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.1rem 0.3rem;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: 8px;
+    transform: translateX(-50%);
+  }
+  .demo__node.is-lit .demo__label {
+    color: var(--blue);
+  }
+  .demo__signal {
+    left: 0;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 0 4px rgba(36, 80, 255, 0.18), 0 0 20px 4px rgba(36, 80, 255, 0.5);
+    opacity: 0;
+    transform: translateZ(24px);
+    pointer-events: none;
+  }
+  .demo__plane :global(.demo__annot) {
+    position: absolute;
+    right: 4%;
+    top: 4%;
+    transform: translateZ(10px) rotate(-6deg) scale(0.9);
+  }
+
+  .demo__log {
+    border-top: 1px solid var(--line-strong);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    min-height: 9.5rem;
+  }
+  .demo__log-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    color: var(--metal);
+  }
+  .demo__log ol {
+    display: grid;
+    gap: 0.2rem;
+  }
+  .demo__log :global(li) {
+    display: flex;
+    gap: 0.8rem;
+    color: var(--ink-2);
+    animation: logIn 0.5s var(--ease-out) both;
+  }
+  .demo__log :global(li time) {
+    color: var(--metal);
+  }
+  .demo__log :global(li::before) {
+    content: '→';
+    color: var(--blue);
+  }
+  @keyframes logIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .demo {
+      grid-template-columns: 0.8fr 1.2fr;
+      align-items: center;
+    }
+    .demo--flip .demo__copy {
+      order: 2;
+    }
+    .demo--flip .demo__plane {
+      --ry: 0deg;
+    }
+  }
+</style>

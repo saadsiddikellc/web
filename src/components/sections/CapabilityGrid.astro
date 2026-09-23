@@ -1,0 +1,106 @@
+---
+import { capabilities } from '@/content/services';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+
+interface Props {
+  withHeader?: boolean;
+}
+const { withHeader = true } = Astro.props;
+---
+
+<section class="section section--raised" aria-labelledby="capabilities-title">
+  <div class="container">
+    {
+      withHeader && (
+        <SectionHeader
+          eyebrow="Capabilities"
+          id="capabilities-title"
+          title="Ten things your team<br/>should never do by hand again."
+          lede="Each capability can run on its own or as part of one connected, autonomous workflow."
+        />
+      )
+    }
+    <ol class="caps">
+      {
+        capabilities.map((c, i) => (
+          <li class="cap" id={c.id} data-reveal style={`--reveal-delay:${(i % 3) * 80}`}>
+            <div class="cap__meta">
+              <span class="mono cap__i">{String(i + 1).padStart(2, '0')}</span>
+              <span class="mono cap__tag">{c.tag}</span>
+            </div>
+            <h3 class="h3">{c.title}</h3>
+            <p class="body">{c.summary}</p>
+            <span class="cap__line" aria-hidden="true" />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .caps {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--line);
+  }
+  .cap {
+    position: relative;
+    display: grid;
+    gap: 0.8rem;
+    align-content: start;
+    padding: 1.8rem 0 2.2rem;
+    border-bottom: 1px solid var(--line);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .cap__meta {
+    display: flex;
+    justify-content: space-between;
+  }
+  .cap__i {
+    color: var(--metal);
+  }
+  .cap__tag {
+    color: var(--blue);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition:
+      opacity 0.4s,
+      transform 0.5s var(--ease-out);
+  }
+  .cap__line {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 1px;
+    width: 100%;
+    background: var(--blue);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.7s var(--ease-out);
+  }
+  .cap:hover .cap__line {
+    transform: scaleX(1);
+  }
+  .cap:hover .cap__tag {
+    opacity: 1;
+    transform: none;
+  }
+  @media (hover: none) {
+    .cap__tag {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (min-width: 700px) {
+    .caps {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--gutter);
+    }
+  }
+  @media (min-width: 1100px) {
+    .caps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

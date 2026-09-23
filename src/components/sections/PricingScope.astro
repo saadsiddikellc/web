@@ -1,0 +1,87 @@
+---
+import { scopeFactors } from '@/content/services';
+import BookCta from '@/components/ui/BookCta.astro';
+import Annotation from '@/components/ui/Annotation.astro';
+---
+
+<section class="section pricing" id="pricing" aria-labelledby="pricing-title">
+  <div class="container pricing__grid">
+    <div class="pricing__intro" data-reveal>
+      <p class="eyebrow">Pricing</p>
+      <h2 class="h2" id="pricing-title">Scoped to your business.<br /><span class="em-metal">Not a package.</span></h2>
+      <p class="body">
+        Every XUS system is designed around the way you work, so there are no off-the-shelf tiers. After a short call we recommend a scope and give you a clear proposal.
+      </p>
+      <div class="pricing__cta">
+        <BookCta />
+      </div>
+    </div>
+    <div class="pricing__factors" data-reveal style="--reveal-delay:120">
+      <p class="label muted pricing__label">Pricing is shaped by <Annotation mark="arrow-down" class="pricing__annot" /></p>
+      <ol>
+        {
+          scopeFactors.map((f, i) => (
+            <li>
+              <span class="mono pricing__i">{String(i + 1).padStart(2, '0')}</span>
+              <span class="pricing__t">{f.title}</span>
+              <span class="pricing__b">{f.body}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing__grid {
+    display: grid;
+    gap: 3.5rem;
+  }
+  .pricing__intro {
+    display: grid;
+    gap: 1.4rem;
+    align-content: start;
+  }
+  .pricing__cta {
+    margin-top: 0.6rem;
+  }
+  .pricing__label {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  .pricing__label :global(.pricing__annot) {
+    position: absolute;
+    left: 11rem;
+    top: -1.2rem;
+    transform: rotate(-30deg) scale(0.7);
+  }
+  .pricing__factors ol {
+    border-top: 1px solid var(--line-strong);
+  }
+  .pricing__factors li {
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0.2rem 1rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .pricing__i {
+    grid-row: span 2;
+    color: var(--blue);
+    padding-top: 0.3rem;
+  }
+  .pricing__t {
+    font-size: 1.25rem;
+    letter-spacing: -0.025em;
+  }
+  .pricing__b {
+    color: var(--ink-3);
+  }
+  @media (min-width: 960px) {
+    .pricing__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gutter);
+    }
+  }
+</style>

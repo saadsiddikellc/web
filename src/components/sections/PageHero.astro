@@ -1,0 +1,67 @@
+---
+import Annotation from '@/components/ui/Annotation.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede?: string;
+  annotation?: string;
+  compact?: boolean;
+}
+const { eyebrow, title, lede, annotation, compact = false } = Astro.props;
+---
+
+<section class:list={['phero', { 'phero--compact': compact }]}>
+  <div class="container phero__grid">
+    <div class="phero__copy">
+      <p class="eyebrow" data-reveal>{eyebrow}</p>
+      <h1 class="h1 phero__title" data-reveal style="--reveal-delay:80" set:html={title} />
+      {lede && <p class="lede" data-reveal style="--reveal-delay:160">{lede}</p>}
+      <div class="phero__slot" data-reveal style="--reveal-delay:240"><slot name="actions" /></div>
+    </div>
+    <div class="phero__visual"><slot /></div>
+    {annotation && <Annotation label={annotation} mark="arrow" class="phero__annot" />}
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative;
+    padding-top: calc(var(--header-h) + clamp(3.5rem, 2rem + 6vw, 8rem));
+    padding-bottom: clamp(3rem, 2rem + 5vw, 7rem);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .phero__grid {
+    position: relative;
+    display: grid;
+    gap: 3rem;
+    align-items: end;
+  }
+  .phero__copy {
+    display: grid;
+    gap: 1.6rem;
+    position: relative;
+    z-index: 1;
+  }
+  .phero__title {
+    max-width: 14ch;
+  }
+  .phero__slot:empty {
+    display: none;
+  }
+  .phero__visual:empty {
+    display: none;
+  }
+  .phero__annot {
+    position: absolute;
+    right: var(--gutter);
+    top: -1rem;
+    transform: rotate(8deg);
+  }
+  @media (min-width: 1000px) {
+    .phero__grid:has(.phero__visual:not(:empty)) {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+  }
+</style>

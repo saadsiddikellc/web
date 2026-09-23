@@ -1,0 +1,115 @@
+---
+import { workItems } from '@/content/work';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import Button from '@/components/ui/Button.astro';
+const featured = workItems.filter((w) => ['lead-capture', 'insurance-renewal', 'autonomous-agent'].includes(w.id));
+---
+
+<section class="section" aria-labelledby="work-teaser-title">
+  <div class="container">
+    <SectionHeader
+      eyebrow="Work · demonstrations"
+      id="work-teaser-title"
+      title="See the systems<br/>in motion."
+      lede="Interactive demonstrations of the workflows we build. Not case studies — working examples of how an XUS agent behaves."
+    />
+    <ul class="wt">
+      {
+        featured.map((w, i) => (
+          <li data-reveal style={`--reveal-delay:${i * 100}`}>
+            <a href={`/work#${w.id}`} class="wt__card">
+              <span class="mono wt__i">{w.index}</span>
+              <span class="h3 wt__t">{w.title}</span>
+              <span class="body wt__k">{w.kicker}</span>
+              <span class="wt__trace" aria-hidden="true">
+                <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+                  <path d="M2 30 C40 30 40 10 80 10 S120 30 160 22 S190 8 198 8" pathLength="1" />
+                  <circle cx="198" cy="8" r="3" />
+                </svg>
+              </span>
+              <span class="mono wt__cta">Open demo →</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="wt__more" data-reveal>
+      <Button href="/work" variant="ghost">All demonstrations</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .wt {
+    display: grid;
+    gap: var(--gutter);
+  }
+  @media (min-width: 900px) {
+    .wt {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .wt__card {
+    position: relative;
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.6rem 1.5rem 1.5rem;
+    min-height: 20rem;
+    background: var(--white);
+    box-shadow: 0 0 0 1px var(--line);
+    align-content: start;
+    transition:
+      box-shadow 0.4s var(--ease-out),
+      transform 0.6s var(--ease-out);
+  }
+  .wt__card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 0 0 1px var(--line-strong),
+      0 30px 50px -30px rgba(12, 12, 13, 0.25);
+  }
+  .wt__i {
+    color: var(--blue);
+  }
+  .wt__trace {
+    margin-top: auto;
+    height: 48px;
+    color: var(--metal-2);
+  }
+  .wt__trace svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .wt__trace path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.2;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke 0.4s;
+  }
+  .wt__trace circle {
+    fill: var(--blue);
+  }
+  .wt__card:hover .wt__trace path {
+    stroke: var(--blue);
+    animation: trace 1.2s var(--ease-out);
+  }
+  @keyframes trace {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+  .wt__cta {
+    color: var(--ink-3);
+    transition: color 0.3s;
+  }
+  .wt__card:hover .wt__cta {
+    color: var(--blue);
+  }
+  .wt__more {
+    margin-top: 2.5rem;
+  }
+</style>

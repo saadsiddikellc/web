@@ -1,0 +1,93 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ContactForm from '@/components/forms/ContactForm.astro';
+import Annotation from '@/components/ui/Annotation.astro';
+import { scopeFactors } from '@/content/services';
+---
+
+<BaseLayout page="contact">
+  <section class="ct">
+    <div class="container ct__grid">
+      <div class="ct__intro">
+        <p class="eyebrow" data-reveal>Contact</p>
+        <h1 class="h1" data-reveal style="--reveal-delay:80">Book a call.</h1>
+        <p class="lede" data-reveal style="--reveal-delay:160">
+          Tell us what you want off your team’s plate. We’ll come back to schedule a short call and scope what an XUS system could take on.
+        </p>
+        <div class="ct__next" data-reveal style="--reveal-delay:240">
+          <p class="label muted">What happens next</p>
+          <ol>
+            <li><span class="mono">01</span>We read your note and reply to schedule a call.</li>
+            <li><span class="mono">02</span>We map the workflows worth automating.</li>
+            <li><span class="mono">03</span>You get a clear, custom proposal.</li>
+          </ol>
+          <p class="body ct__scope">Pricing is scoped to {scopeFactors.map((f) => f.title.toLowerCase()).join(', ')}.</p>
+        </div>
+        <Annotation label="Follow up" mark="arrow" class="ct__annot" />
+      </div>
+      <div class="ct__form" id="book" data-reveal style="--reveal-delay:120">
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .ct {
+    padding-top: calc(var(--header-h) + clamp(3rem, 2rem + 5vw, 7rem));
+    padding-bottom: clamp(4rem, 3rem + 5vw, 8rem);
+  }
+  .ct__grid {
+    display: grid;
+    gap: 4rem;
+  }
+  .ct__intro {
+    position: relative;
+    display: grid;
+    gap: 1.6rem;
+    align-content: start;
+  }
+  .ct__next {
+    margin-top: 1rem;
+  }
+  .ct__next ol {
+    margin-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .ct__next li {
+    display: flex;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ct__next .mono {
+    color: var(--blue);
+    padding-top: 0.2rem;
+  }
+  .ct__scope {
+    margin-top: 1.2rem;
+    font-size: 0.92rem;
+  }
+  .ct__intro :global(.ct__annot) {
+    position: absolute;
+    right: 0;
+    top: 5.5rem;
+    transform: rotate(12deg);
+  }
+  .ct__form {
+    padding: clamp(1.5rem, 1rem + 2vw, 3rem);
+    background: var(--white);
+    box-shadow: 0 0 0 1px var(--line);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  @media (min-width: 1000px) {
+    .ct__grid {
+      grid-template-columns: 0.85fr 1.15fr;
+    }
+  }
+  @media (max-width: 999px) {
+    .ct__intro :global(.ct__annot) {
+      display: none;
+    }
+  }
+</style>

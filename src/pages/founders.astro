@@ -1,0 +1,175 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import FoundersScene from '@/three/scenes/FoundersScene';
+import Annotation from '@/components/ui/Annotation.astro';
+import BookCta from '@/components/ui/BookCta.astro';
+import { founders } from '@/content/founders';
+---
+
+<BaseLayout page="founders">
+  <section class="fnd" aria-labelledby="founders-title">
+    <div class="fnd__stage">
+      <FoundersScene client:visible labels={founders.figures.map((f) => ({ ...f }))} />
+    </div>
+    <div class="container fnd__copy">
+      <p class="eyebrow" data-reveal>Founders</p>
+      <h1 class="display fnd__title" id="founders-title" data-reveal style="--reveal-delay:80">{founders.title}</h1>
+      <div class="fnd__lines" data-reveal style="--reveal-delay:160">
+        {
+          founders.lines.map((l, i) => (
+            <p class="h3">
+              <span class="mono fnd__i">0{i + 1}</span>
+              {l}
+            </p>
+          ))
+        }
+      </div>
+      <Annotation label="Goals" mark="circle" class="fnd__annot" />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container fnd__body">
+      <p class="lede" data-reveal>{founders.body}</p>
+      <div class="fnd__roles" data-reveal style="--reveal-delay:120">
+        {
+          founders.figures.map((f) => (
+            <div class="fnd__role">
+              <span class="mono">{f.label}</span>
+              <span>{f.note}</span>
+            </div>
+          ))
+        }
+      </div>
+      <div data-reveal><BookCta /></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .fnd {
+    position: relative;
+    padding-top: var(--header-h);
+  }
+  .fnd__stage {
+    position: relative;
+    height: min(82vh, 880px);
+    min-height: 480px;
+    background: #eceae5;
+  }
+  .fnd__stage :global(.founders-scene) {
+    position: absolute;
+    inset: 0;
+    touch-action: pan-y;
+  }
+  .fnd__stage :global(.founders-scene canvas) {
+    cursor: grab;
+  }
+  .fnd__stage :global(.founders-scene canvas:active) {
+    cursor: grabbing;
+  }
+  .fnd__stage :global(.founders-scene--fallback) {
+    background: radial-gradient(40% 50% at 50% 60%, #fff, #e3e1dc);
+  }
+  .fnd__stage :global(.founders-scene__labels) {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .fnd__stage :global(.founders-scene__label) {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .fnd__stage :global(.founders-scene__label-t) {
+    display: inline-block;
+    transform: translate(-50%, -100%);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--blue);
+    white-space: nowrap;
+  }
+  .fnd__stage :global(.founders-scene__ui) {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .fnd__stage :global(.founders-scene__zoom) {
+    display: flex;
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .fnd__stage :global(.founders-scene__zoom button) {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    transition: background 0.3s;
+  }
+  .fnd__stage :global(.founders-scene__zoom button:hover) {
+    background: var(--white);
+  }
+  .fnd__stage :global(.founders-scene__hint) {
+    margin-left: auto;
+    color: var(--ink-3);
+  }
+  .fnd__copy {
+    position: relative;
+    display: grid;
+    gap: 1.6rem;
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .fnd__lines {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .fnd__lines p {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+  }
+  .fnd__i {
+    color: var(--blue);
+  }
+  .fnd__copy :global(.fnd__annot) {
+    position: absolute;
+    right: var(--gutter);
+    top: 3rem;
+    transform: rotate(-6deg);
+  }
+  .fnd__body {
+    display: grid;
+    gap: 2rem;
+    border-top: 1px solid var(--line);
+    padding-top: 3rem;
+  }
+  .fnd__body .lede {
+    max-width: 46ch;
+  }
+  .fnd__roles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line-strong);
+  }
+  .fnd__role {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1.2rem 1rem 1.2rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .fnd__role .mono {
+    color: var(--blue);
+  }
+  @media (max-width: 720px) {
+    .fnd__copy :global(.fnd__annot) {
+      display: none;
+    }
+  }
+</style>

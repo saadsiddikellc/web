@@ -1,0 +1,45 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+  SITE_URL = "https://xus.co"
+
+# Canonical host: www → apex
+[[redirects]]
+  from = "https://www.xus.co/*"
+  to = "https://xus.co/:splat"
+  status = 301
+  force = true
+
+# Friendly aliases
+[[redirects]]
+  from = "/book"
+  to = "/contact"
+  status = 302
+
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
+# Fingerprinted build assets are safe to cache forever.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

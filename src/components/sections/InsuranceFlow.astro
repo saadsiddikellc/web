@@ -1,0 +1,212 @@
+---
+import { insurance } from '@/content/insurance';
+import Annotation from '@/components/ui/Annotation.astro';
+import BookCta from '@/components/ui/BookCta.astro';
+
+interface Props {
+  headingLevel?: 'h2' | 'h3';
+}
+const { headingLevel: H = 'h2' } = Astro.props;
+---
+
+<section class="section section--ink ins" id="insurance" aria-labelledby="insurance-title">
+  <div class="container">
+    <div class="ins__head">
+      <div data-reveal>
+        <p class="eyebrow ins__eyebrow">{insurance.eyebrow}</p>
+        <H class="h1 ins__title" id="insurance-title">
+          Missed lead<br />= missed <span class="ins__opp">opportunity.<Annotation mark="underline" class="ins__annot" /></span>
+        </H>
+      </div>
+      <div class="ins__intro" data-reveal style="--reveal-delay:120">
+        <p class="lede">{insurance.intro}</p>
+        <ul class="ins__aud">{insurance.audiences.map((a) => <li class="mono">{a}</li>)}</ul>
+      </div>
+    </div>
+
+    <ol class="ins__flow" data-ins-flow>
+      {
+        insurance.flow.map((step, i) => (
+          <li class="ins__step" data-step style={`--i:${i}`}>
+            <span class="ins__node" aria-hidden="true" />
+            <span class="ins__i mono">{String(i + 1).padStart(2, '0')}</span>
+            <span class="ins__label">{step.label}</span>
+            <span class="ins__note">{step.note}</span>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="ins__foot">
+      <p class="mono ins__disclaimer">{insurance.note}</p>
+      <BookCta variant="light" />
+    </div>
+  </div>
+</section>
+
+<script>
+  const flows = document.querySelectorAll<HTMLElement>('[data-ins-flow]');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  flows.forEach((flow) => {
+    const steps = Array.from(flow.querySelectorAll<HTMLElement>('[data-step]'));
+    if (reduced) {
+      steps.forEach((s) => s.classList.add('is-done'));
+      return;
+    }
+    let i = 0;
+    let timer = 0;
+    const tick = () => {
+      steps.forEach((s, k) => {
+        s.classList.toggle('is-active', k === i);
+        s.classList.toggle('is-done', k < i);
+      });
+      i = (i + 1) % (steps.length + 2);
+    };
+    new IntersectionObserver(([e]) => {
+      window.clearInterval(timer);
+      if (e.isIntersecting) timer = window.setInterval(tick, 900);
+    }).observe(flow);
+  });
+</script>
+
+<style>
+  .ins__head {
+    display: grid;
+    gap: 2.5rem;
+    margin-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .ins__eyebrow {
+    color: var(--metal);
+    margin-bottom: 1.4rem;
+  }
+  .ins__opp {
+    position: relative;
+    display: inline-block;
+  }
+  .ins__opp :global(.ins__annot) {
+    position: absolute;
+    left: -2%;
+    right: -4%;
+    bottom: -0.2em;
+    color: var(--blue-2);
+  }
+  .ins__opp :global(.ins__annot svg) {
+    width: 100%;
+  }
+  .ins__aud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    margin-top: 1.6rem;
+    color: var(--metal-2);
+  }
+  .ins__aud li::before {
+    content: '— ';
+    color: var(--blue-2);
+  }
+  @media (min-width: 1000px) {
+    .ins__head {
+      grid-template-columns: 1.25fr 1fr;
+      align-items: end;
+    }
+  }
+
+  .ins__flow {
+    display: grid;
+    grid-template-columns: 1fr;
+    counter-reset: step;
+  }
+  .ins__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+    padding: 1.1rem 0 1.1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    transition: color 0.5s;
+    color: var(--metal);
+  }
+  .ins__node {
+    position: absolute;
+    left: 0;
+    top: -1px;
+    height: 1px;
+    width: 100%;
+    background: var(--blue-2);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.9s var(--ease-out);
+  }
+  .ins__i {
+    grid-row: span 2;
+    padding-top: 0.2rem;
+    color: var(--metal);
+  }
+  .ins__label {
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+  }
+  .ins__note {
+    font-size: 0.9rem;
+    color: var(--metal);
+  }
+  .ins__step.is-done,
+  .ins__step.is-active {
+    color: var(--bg);
+  }
+  .ins__step.is-done .ins__node,
+  .ins__step.is-active .ins__node {
+    transform: scaleX(1);
+  }
+  .ins__step.is-active .ins__i {
+    color: var(--blue-2);
+  }
+  .ins__step.is-active .ins__label::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: 0.6rem;
+    border-radius: 50%;
+    background: var(--blue-2);
+    box-shadow: 0 0 12px var(--blue-2);
+    vertical-align: middle;
+  }
+  @media (min-width: 760px) {
+    .ins__flow {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--gutter);
+    }
+  }
+  @media (min-width: 1100px) {
+    .ins__flow {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .ins__step {
+      grid-template-columns: 1fr;
+      padding: 1.4rem 1rem 2rem 0;
+      min-height: 11rem;
+      align-content: start;
+    }
+    .ins__i {
+      grid-row: auto;
+      margin-bottom: 1.4rem;
+    }
+  }
+  .ins__foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .ins__disclaimer {
+    color: var(--metal);
+    max-width: 60ch;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+</style>

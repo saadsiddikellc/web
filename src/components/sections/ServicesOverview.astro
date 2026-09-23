@@ -1,0 +1,109 @@
+---
+import { services } from '@/content/services';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import Annotation from '@/components/ui/Annotation.astro';
+import Button from '@/components/ui/Button.astro';
+
+interface Props {
+  detailed?: boolean;
+}
+const { detailed = false } = Astro.props;
+---
+
+<section class="section" aria-labelledby="services-title">
+  <div class="container">
+    <SectionHeader
+      eyebrow="What we build"
+      id="services-title"
+      title="AI agents and automation,<br/>built around your workflows."
+      lede="Two disciplines, one outcome: repetitive work that runs itself, reliably, in the tools you already use."
+    />
+    <div class="svc">
+      {
+        services.map((s, i) => (
+          <article class="svc__item" id={s.id} data-reveal style={`--reveal-delay:${i * 120}`}>
+            <div class="svc__top">
+              <span class="svc__index mono">{s.index}</span>
+              {i === 0 && <Annotation label="Autonomous" mark="circle" class="svc__annot" />}
+            </div>
+            <h3 class="h1 svc__title">{s.title}</h3>
+            <p class="lede">{s.lede}</p>
+            {detailed && <p class="body">{s.body}</p>}
+            <ul class="svc__points">
+              {s.points.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+    {
+      !detailed && (
+        <div class="svc__more" data-reveal>
+          <Button href="/services" variant="ghost">Explore services</Button>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .svc {
+    display: grid;
+    border-top: 1px solid var(--line-strong);
+  }
+  .svc__item {
+    position: relative;
+    display: grid;
+    gap: 1.3rem;
+    padding-block: clamp(2rem, 1rem + 3vw, 3.5rem);
+    border-bottom: 1px solid var(--line-strong);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .svc__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .svc__index {
+    color: var(--blue);
+  }
+  .svc__title {
+    letter-spacing: -0.05em;
+  }
+  .svc__points {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+    color: var(--ink-2);
+  }
+  .svc__points li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: baseline;
+  }
+  .svc__points li::before {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--ink);
+    transform: translateY(-0.3em);
+    flex: none;
+  }
+  .svc__more {
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .svc {
+      grid-template-columns: 1fr 1fr;
+    }
+    .svc__item {
+      padding-inline: 0 clamp(1.5rem, 4vw, 4rem);
+    }
+    .svc__item + .svc__item {
+      border-left: 1px solid var(--line-strong);
+      padding-inline: clamp(1.5rem, 4vw, 4rem) 0;
+    }
+  }
+</style>

@@ -1,0 +1,174 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/sections/PageHero.astro';
+import WorkflowDemo from '@/components/work/WorkflowDemo.astro';
+import BookCta from '@/components/ui/BookCta.astro';
+import CoreScene from '@/three/scenes/CoreScene';
+import { workItems, workDisclaimer } from '@/content/work';
+import { siteConfig } from '@/config/site';
+
+const flows = workItems.filter((w) => !w.feature);
+const feature = workItems.find((w) => w.feature)!;
+
+const schema = [
+  {
+    '@type': 'ItemList',
+    name: 'XUS workflow demonstrations',
+    itemListElement: workItems.map((w, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: w.title,
+      url: `${siteConfig.url}/work#${w.id}`,
+    })),
+  },
+];
+---
+
+<BaseLayout page="work" schema={schema}>
+  <PageHero
+    eyebrow="Work"
+    title="Demonstrations,<br/>not case studies."
+    lede="Seven interactive demonstrations of the workflows XUS builds. Press run, watch the signal move, read the log."
+    annotation="Follow up"
+  >
+    <Fragment slot="actions">
+      <p class="mono disclaimer">{workDisclaimer}</p>
+    </Fragment>
+  </PageHero>
+
+  <nav class="container work-index" aria-label="Demonstrations">
+    <ol>
+      {
+        workItems.map((w) => (
+          <li>
+            <a href={`#${w.id}`}>
+              <span class="mono">{w.index}</span>
+              {w.title}
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+
+  <div class="container">
+    {flows.map((item, i) => <WorkflowDemo item={item} flip={i % 2 === 1} />)}
+  </div>
+
+  <section class="feature" id={feature.id} aria-labelledby="feature-title">
+    <div class="feature__canvas">
+      <CoreScene client:visible ring steps={8} />
+    </div>
+    <div class="container feature__copy">
+      <div class="feature__meta" data-reveal>
+        <span class="mono feature__i">{feature.index}</span>
+        <span class="mono feature__badge">Demonstration</span>
+      </div>
+      <h2 class="h1" id="feature-title" data-reveal>{feature.title}</h2>
+      <p class="lede" data-reveal>{feature.summary}</p>
+      <ol class="feature__steps" data-reveal>
+        {feature.log.map((l, i) => <li><span class="mono">{String(i + 1).padStart(2, '0')}</span>{l}</li>)}
+      </ol>
+      <div data-reveal><BookCta variant="light" /></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { initDemos } from '@/scripts/demos';
+  initDemos();
+</script>
+
+<style>
+  .disclaimer {
+    color: var(--ink-3);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    max-width: 52ch;
+    padding-left: 0.9rem;
+    border-left: 1px solid var(--blue);
+  }
+  .work-index {
+    padding-block: 2rem;
+  }
+  .work-index ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .work-index a {
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    transition:
+      background 0.3s,
+      color 0.3s;
+  }
+  .work-index a:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .work-index .mono {
+    color: var(--blue);
+  }
+  .feature {
+    position: relative;
+    background: var(--ink);
+    color: var(--bg);
+    overflow: hidden;
+    scroll-margin-top: var(--header-h);
+  }
+  .feature__canvas {
+    position: relative;
+    height: min(78vh, 760px);
+    min-height: 420px;
+    background: radial-gradient(55% 60% at 50% 55%, #f6f6f8 0%, #e6e7eb 55%, #d7d8dd 100%);
+  }
+  .feature__canvas :global(.core-scene) {
+    position: absolute;
+    inset: 0;
+  }
+  .feature__copy {
+    display: grid;
+    gap: 1.6rem;
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem);
+  }
+  .feature__copy .lede {
+    color: var(--metal-2);
+    max-width: 48ch;
+  }
+  .feature__meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .feature__i {
+    color: var(--blue-2);
+  }
+  .feature__badge {
+    padding: 0.3rem 0.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    color: var(--metal-2);
+    font-size: 0.62rem;
+  }
+  .feature__steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .feature__steps li {
+    display: flex;
+    gap: 0.8rem;
+    align-items: baseline;
+    padding: 0.9rem 1rem 0.9rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .feature__steps .mono {
+    color: var(--blue-2);
+  }
+</style>
