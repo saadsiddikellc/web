@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Page Not Found — Fred’s Auto</title>
+<meta name="description" content="That page doesn’t exist. Head back to Fred’s Auto — automotive electrical specialist." />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#ffffff" />
+
+<link rel="icon" href="/assets/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+
+<link rel="stylesheet" href="/assets/css/styles.css" />
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    place-content: center;
+    justify-items: start;
+    gap: 0.35rem;
+    padding: var(--gutter);
+    max-width: var(--maxw);
+    margin-inline: auto;
+  }
+  .nf__code {
+    font-family: var(--mono);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--graphite);
+    margin-bottom: 1.75rem;
+  }
+  .nf__title {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+  }
+  .nf__text {
+    margin-top: 1rem;
+    max-width: 34rem;
+    color: var(--ink-3);
+    font-size: var(--fs-lede);
+  }
+  .nf__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.25rem; }
+  .nf__logo { margin-bottom: 3rem; }
+</style>
+</head>
+
+<body>
+<main class="nf">
+  <a class="logo nf__logo" href="/" aria-label="Fred’s Auto — home">
+    <svg class="logo__mark" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
+      <rect width="32" height="32" rx="7.5" fill="#0b0c0d" />
+      <path d="M6.4 20.1h4.4L14.7 10.6l3.6 9.5h2.3" fill="none" stroke="#ffffff" stroke-width="2.4"
+            stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="25" cy="20.1" r="2.3" fill="#8f959b" />
+    </svg>
+    <span class="logo__word">
+      <span class="logo__name">FRED’S AUTO</span>
+      <span class="logo__tag">Automotive Electrical Specialist</span>
+    </span>
+  </a>
+
+  <p class="nf__code">Error 404</p>
+  <h1 class="nf__title">This Circuit<br />Leads Nowhere.</h1>
+  <p class="nf__text">
+    The page you’re after doesn’t exist. The fault is with the link, not your vehicle.
+  </p>
+
+  <div class="nf__actions">
+    <a class="btn btn--primary" href="/">Back to Home</a>
+    <a class="btn btn--ghost" href="/#contact">Contact Fred</a>
+  </div>
+</main>
+</body>
+</html>

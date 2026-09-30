@@ -1,0 +1,88 @@
+# Fred's Auto — Netlify configuration
+#
+# This is a static site with no build step: the files you upload are the files
+# that get served. Works both ways:
+#   • Drag & drop  — drop this folder (or the zip) on app.netlify.com/drop
+#   • Git deploy   — set the site's "Base directory" to the folder holding this file
+[build]
+  publish = "."
+  command = ""
+
+# ---------------------------------------------------------------------------
+# Security headers
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()"
+
+# ---------------------------------------------------------------------------
+# Caching
+#
+# Nothing here is fingerprinted, so CSS/JS must revalidate or an update would
+# not reach browsers that already cached the old file. Revalidation is cheap
+# (a 304 on ~44 KB total) and Netlify's CDN purges on every deploy anyway.
+# Icons and the social card are stable, so they get a real cache window.
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/assets/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/assets/*.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# ---------------------------------------------------------------------------
+# Friendly aliases. Unmatched paths fall through to 404.html automatically.
+# ---------------------------------------------------------------------------
+# The folder ships with its source (README, scripts) so it stays self-sufficient
+# to edit and redeploy. Those are not part of the site, so they are not served.
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/README.md"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/book"
+  to = "/#contact"
+  status = 302
+
+[[redirects]]
+  from = "/contact"
+  to = "/#contact"
+  status = 302
+
+[[redirects]]
+  from = "/services"
+  to = "/#services"
+  status = 302

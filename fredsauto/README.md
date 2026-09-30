@@ -15,6 +15,9 @@ dependencies — open `index.html` and it runs.
 ```
 fredsauto/
 ├── index.html              the whole site
+├── 404.html                branded not-found page (Netlify serves it automatically)
+├── netlify.toml            headers, caching, redirects
+├── robots.txt
 ├── assets/
 │   ├── css/styles.css      design tokens + all styling
 │   ├── js/site.js          nav, mobile menu, scroll reveals, form validation
@@ -22,7 +25,9 @@ fredsauto/
 │   ├── favicon.ico         16 + 32 px, for older browsers
 │   ├── apple-touch-icon.png
 │   └── og-image.png        1200×630 social card
-└── scripts/generate-assets.mjs   regenerates the PNG/ICO assets
+└── scripts/
+    ├── generate-assets.mjs regenerates the PNG/ICO assets
+    └── set-origin.mjs      stamps the live domain into the absolute URLs
 ```
 
 ## Develop
@@ -35,13 +40,57 @@ python3 -m http.server 8000     # → http://localhost:8000
 
 Opening `index.html` directly from disk also works; all paths are relative.
 
-## Deploy
+## Deploy to Netlify
 
-Upload the `fredsauto/` directory to any static host (Netlify, Vercel, GitHub Pages,
-S3, plain nginx). There is nothing to compile.
+Nothing to compile, so either route works.
 
-Before going live, set the `og:image` and add a `<link rel="canonical">` with the real
-absolute origin — social scrapers need absolute URLs.
+**Drag and drop (fastest).** Open <https://app.netlify.com/drop> and drop this folder —
+or the zip of it — onto the page. Netlify reads `netlify.toml` from the root of what you
+drop, so headers, caching and redirects apply straight away. The site is live in seconds.
+
+**Connect the Git repo.** In *Add new site → Import an existing project*, pick the repo
+and set:
+
+| Setting | Value |
+| --- | --- |
+| Base directory | `fredsauto` |
+| Build command | *(leave empty)* |
+| Publish directory | `fredsauto` |
+
+The repo root holds a separate, unrelated Astro site with its own `netlify.toml`, so the
+base directory matters — without it Netlify would try to build that project instead.
+
+### After the first deploy (optional, 10 seconds)
+
+Netlify assigns a domain such as `celebrated-tarsier-1a2b3c.netlify.app`. The page ships
+with relative `canonical`, `og:url` and `og:image` values, which are valid and work as-is.
+To make them absolute — which the fussier social scrapers prefer — run:
+
+```bash
+node scripts/set-origin.mjs https://your-site.netlify.app
+```
+
+Then redeploy. Re-run it any time the domain changes; it re-anchors the existing paths
+rather than appending, so it stays correct.
+
+### What `netlify.toml` sets
+
+- **Security headers** on every response: `nosniff`, `DENY` framing, a strict
+  referrer policy and a locked-down `Permissions-Policy`.
+- **Caching.** Nothing is fingerprinted, so CSS and JS must revalidate — otherwise an
+  update would never reach a browser that cached the old file. Revalidation costs a 304
+  on ~44 KB, and Netlify purges its CDN on each deploy anyway. Icons and the social card
+  are stable, so they cache for a week.
+- **Redirects.** `/home` → `/` permanently; `/book`, `/contact` and `/services` jump to
+  the matching section. `README.md` and `scripts/*` return 404 — they travel with the
+  folder so it stays editable, but they are not part of the site.
+- Any other unmatched path falls through to `404.html` automatically.
+
+### Any other host
+
+The same folder works unchanged on Vercel, GitHub Pages, Cloudflare Pages, S3 or plain
+nginx — only `netlify.toml` is Netlify-specific, and it is ignored elsewhere. You would
+need to re-express the headers and redirects in that host's own format.
 
 ## Brand
 
